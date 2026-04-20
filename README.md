@@ -22,3 +22,4 @@
 - `lobster-fitting-record-merge`：新增硬字段 `write_decision`，其中 `PENDING_MEDIA_NOT_READY_TO_WRITE` 作为连接器可直接识别的禁止写入标记。
 - `lobster-fitting-bitable-sync`：主表粒度调整为“**一件商品 + 一个客人 + 一个 session = 一条记录**”，主表名调整为 `试衣商品记录`，并补充 `试衣Session索引` 作为可选辅助表。
 - `lobster-fitting-bitable-sync`：补充执行约束——`pending_media` 状态下不得写入主表正式记录，并要求连接器识别 `write_decision.allow_write = false`。
+- `lobster-fitting-record-merge` / `lobster-fitting-bitable-sync`：补充商品主值优先级约束——本次吊牌 OCR 识别出的商品应优先于历史上下文商品，防止“试穿单品”写成旧商品。
