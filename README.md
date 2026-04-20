@@ -13,6 +13,11 @@
 - lobster-fitting-daily-summary
 - lobster-script-generate
 
+
+- lobster-fitting-bundle-router
+- lobster-fitting-draft-manager
+- lobster-fitting-card-fill
+
 ## Usage
 将仓库作为自定义 skill 源，供 ArkClaw / OpenClaw 学习或安装。
 

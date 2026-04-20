@@ -13,3 +13,7 @@
 - `lobster-fitting-query/SKILL.md`
 - `lobster-fitting-daily-summary/SKILL.md`
 - `lobster-script-generate/SKILL.md`
+
+- `lobster-fitting-bundle-router/SKILL.md`
+- `lobster-fitting-draft-manager/SKILL.md`
+- `lobster-fitting-card-fill/SKILL.md`
