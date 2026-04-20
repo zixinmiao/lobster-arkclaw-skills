@@ -15,3 +15,7 @@
 
 ## Usage
 将仓库作为自定义 skill 源，供 ArkClaw / OpenClaw 学习或安装。
+
+## 最新调整
+- `lobster-fitting-record-merge`：新增飞书拆分消息归并（bundle）、session 归属判断（append / new_session / pending_confirm）和跨天默认新建规则。
+- `lobster-fitting-bitable-sync`：主表粒度调整为“**一件商品 + 一个客人 + 一个 session = 一条记录**”，主表名调整为 `试衣商品记录`，并补充 `试衣Session索引` 作为可选辅助表。
