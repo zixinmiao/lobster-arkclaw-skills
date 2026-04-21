@@ -28,3 +28,5 @@
 - `lobster-fitting-bitable-sync`：主表粒度调整为“**一件商品 + 一个客人 + 一个 session = 一条记录**”，主表名调整为 `试衣商品记录`，并补充 `试衣Session索引` 作为可选辅助表。
 - `lobster-fitting-bitable-sync`：补充执行约束——`pending_media` 状态下不得写入主表正式记录，并要求连接器识别 `write_decision.allow_write = false`。
 - `lobster-fitting-record-merge` / `lobster-fitting-bitable-sync`：补充商品主值优先级约束——本次吊牌 OCR 识别出的商品应优先于历史上下文商品，防止“试穿单品”写成旧商品。
+- `lobster-tag-ocr`：收紧职责边界，只输出商品候选信息；单张吊牌图不得直接推断成交、试穿结果或正式入库结论。
+- `lobster-fitting-record-merge`：继续强化保守写入策略，默认优先“待补充/待确认”，只有商品主体明确、反馈足够且无冲突时才允许正式写入。
