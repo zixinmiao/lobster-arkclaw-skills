@@ -23,6 +23,7 @@
 
 ## 最新调整
 - `lobster-fitting-record-merge`：新增飞书拆分消息归并（bundle）、session 归属判断（append / new_session / pending_confirm）和跨天默认新建规则。
+- `lobster-fitting-record-merge` / `lobster-fitting-draft-manager` / `lobster-fitting-bundle-router`：补充仅依赖 skill 的上下文隔离策略，新增 `strict_isolation` / `reset_context` / `force_new_session` / `force_new_bundle` 等约束，默认收紧历史上下文继承，降低串单风险。
 - `lobster-fitting-record-merge`：补充强约束——当只有单张图片且无文本时，`bundle_status` 必须为 `pending_media`，`fitting_records` 必须为空，且禁止仅依据图片推断成交。
 - `lobster-fitting-record-merge`：新增硬字段 `write_decision`，其中 `PENDING_MEDIA_NOT_READY_TO_WRITE` 作为连接器可直接识别的禁止写入标记。
 - `lobster-fitting-bitable-sync`：主表粒度调整为“**一件商品 + 一个客人 + 一个 session = 一条记录**”，主表名调整为 `试衣商品记录`，并补充 `试衣Session索引` 作为可选辅助表。
