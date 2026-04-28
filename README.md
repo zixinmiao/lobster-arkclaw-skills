@@ -43,4 +43,5 @@
 - `lobster-fitting-bitable-sync`：补充主表导购/录入来源字段，新增 `operator_id`、`operator_name`、`source_chat_id`、`source_sender_id`。
 - 新增 `lobster-followup-lead-sync`：基于试衣反馈判断是否生成回访线索，并同步更新试衣表与线索回访表，支持输出回访原因、建议触达时机、触达触发条件和建议回访内容；并新增硬约束——不得编造活动、折扣、会员日、到货时间或库存承诺。
 - 新增 `lobster-followup-reminder-dispatch`：用于配合统一定时任务扫描线索回访表，派发到期提醒，避免为每条线索单独手工配置定时任务；提醒文案只允许转述已知事实，不得放大经营信息。
+- `lobster-followup-lead-sync` / `lobster-followup-reminder-dispatch`：收敛回访提醒为“一次提醒制”，新增 `是否已提醒`、`提醒时间` 字段；`same_day` / `next_day` 建议落成具体提醒时间，`event_triggered` 支持每周固定拉一次待判断清单。
 - 新增 `lobster-member-profile-sync`：基于试衣反馈补充会员画像，并同步写入独立的会员画像表，沉淀风格偏好、版型偏好、价格敏感度、未购原因和回访触发偏好等信息。
