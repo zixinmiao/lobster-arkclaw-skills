@@ -31,7 +31,6 @@
 - `source_chat_id`
 - `source_sender_id`
 - `session_id`
-- `brand_name`（跨品牌复用时推荐）
 
 ### 禁止事项
 - 禁止因不同导购触发而重复创建多个 Base

@@ -17,7 +17,6 @@
 - `operator_name`（文本）
 - `source_chat_id`（文本）
 - `source_sender_id`（文本）
-- `brand_name`（文本）
 - `customer_id`（文本）
 - `is_member`（复选框/布尔）
 - `member_mobile_last4`（文本）

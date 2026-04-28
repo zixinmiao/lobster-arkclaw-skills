@@ -23,7 +23,6 @@ description: 在试衣数据准备写入飞书多维表格前，检查并补齐 
 - `schema_version`（可选）
 - `expected_tables`（可选）
 - `binding_scope`（可选，默认 `project`）
-- `brand_name`（可选）
 
 ## 默认对象
 ### Base
@@ -104,8 +103,7 @@ description: 在试衣数据准备写入飞书多维表格前，检查并补齐 
     "binding_status": "ready | partial | missing | invalid",
     "schema_status": "ready | partial | missing_fields | missing_tables",
     "schema_version": "v1",
-    "binding_scope": "project",
-    "brand_name": "xxx"
+    "binding_scope": "project"
   },
   "bootstrap_summary": "...",
   "next_action": "go_sync | retry_fix | manual_check"
