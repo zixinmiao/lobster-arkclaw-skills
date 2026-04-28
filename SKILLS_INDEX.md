@@ -10,6 +10,7 @@
 - `lobster-fitting-record-merge/SKILL.md`
 - `lobster-fitting-photo-archive/SKILL.md`
 - `lobster-fitting-bitable-sync/SKILL.md`
+- `lobster-fitting-bitable-bootstrap/SKILL.md`
 - `lobster-fitting-query/SKILL.md`
 - `lobster-fitting-daily-summary/SKILL.md`
 - `lobster-script-generate/SKILL.md`
