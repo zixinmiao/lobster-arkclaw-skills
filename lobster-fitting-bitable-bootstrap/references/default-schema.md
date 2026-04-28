@@ -13,6 +13,11 @@
 - `fitting_time`（日期/日期时间）
 - `guide_name`（文本）
 - `store_name`（文本）
+- `operator_id`（文本）
+- `operator_name`（文本）
+- `source_chat_id`（文本）
+- `source_sender_id`（文本）
+- `brand_name`（文本）
 - `customer_id`（文本）
 - `is_member`（复选框/布尔）
 - `member_mobile_last4`（文本）
@@ -78,5 +83,6 @@
 ## 建表原则
 - 先建最小可用字段，不在 bootstrap 阶段引入复杂公式字段
 - 字段类型以当前飞书 Base 可稳定写入为优先
+- 主表必须保留导购/录入来源识别字段，确保多导购共用同一张表时仍可区分记录归属
 - 真实写入前，以上游 `lobster-fitting-bitable-sync` 的字段映射为准
 - 若已有历史表结构，不强制重建，优先补齐缺失字段

@@ -36,6 +36,8 @@
 - `lobster-tag-ocr`：收紧职责边界，只输出商品候选信息；单张吊牌图不得直接推断成交、试穿结果或正式入库结论。
 - `lobster-fitting-record-merge`：继续强化保守写入策略，默认优先“待补充/待确认”，只有商品主体明确、反馈足够且无冲突时才允许正式写入。
 - 新增 `lobster-fitting-bitable-bootstrap`：在写表前检查并补齐 `bitable_binding`、Base、目标表和必要字段，把“可写入”变成正式落表前置条件。
+- `lobster-fitting-bitable-bootstrap` / `lobster-fitting-bitable-sync`：明确默认使用项目级共享 binding；已有表则复用，不因不同导购重复建表。
+- `lobster-fitting-bitable-sync`：补充主表导购/录入来源字段，新增 `operator_id`、`operator_name`、`source_chat_id`、`source_sender_id`，并建议保留 `brand_name` 以支持跨品牌复用。
 - 新增 `lobster-followup-lead-sync`：基于试衣反馈判断是否生成回访线索，并同步更新试衣表与线索回访表，支持输出回访原因、建议触达时机、触达触发条件和建议回访内容；并新增硬约束——不得编造活动、折扣、会员日、到货时间或库存承诺。
 - 新增 `lobster-followup-reminder-dispatch`：用于配合统一定时任务扫描线索回访表，派发到期提醒，避免为每条线索单独手工配置定时任务；提醒文案只允许转述已知事实，不得放大经营信息。
 - 新增 `lobster-member-profile-sync`：基于试衣反馈补充会员画像，并同步写入独立的会员画像表，沉淀风格偏好、版型偏好、价格敏感度、未购原因和回访触发偏好等信息。
