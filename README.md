@@ -25,6 +25,9 @@
 ## Usage
 将仓库作为自定义 skill 源，供 ArkClaw / OpenClaw 学习或安装。
 
+## Workflow
+- `WORKFLOW.md`：用于描述推荐的 skill 编排顺序、建表前置条件、共享 binding 复用规则，以及最小可用运行链路。
+
 ## 最新调整
 - `lobster-fitting-record-merge`：新增飞书拆分消息归并（bundle）、session 归属判断（append / new_session / pending_confirm）和跨天默认新建规则。
 - `lobster-fitting-record-merge` / `lobster-fitting-draft-manager` / `lobster-fitting-bundle-router`：补充仅依赖 skill 的上下文隔离策略，新增 `strict_isolation` / `reset_context` / `force_new_session` / `force_new_bundle` 等约束，默认收紧历史上下文继承，降低串单风险。
