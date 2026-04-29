@@ -51,3 +51,7 @@
 ## Binding Strategy
 - 默认优先使用自动发现机制：先搜索飞书中名称相近且字段匹配的候选表，再由人工确认绑定。
 - 确认前只输出候选，不直接写正式业务记录。
+
+
+## Field Contract
+- `references/bitable-field-contract.md`：导购小龙虾相关飞书表字段语义 contract。定义“应有字段”、允许/禁止写入内容、最小可写字段集，以及运行时字段检查规则。
