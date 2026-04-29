@@ -45,6 +45,7 @@
 - 新增 `lobster-followup-reminder-dispatch`：用于配合统一定时任务扫描线索回访表，派发到期提醒，避免为每条线索单独手工配置定时任务；提醒文案只允许转述已知事实，不得放大经营信息。
 - `lobster-followup-lead-sync` / `lobster-followup-reminder-dispatch`：收敛回访提醒为“一次提醒制”，新增 `是否已提醒`、`提醒时间` 字段；`same_day` / `next_day` / `weekend_or_holiday` 必须落成具体提醒时间，`event_triggered` 支持每周固定拉一次待判断清单。
 - 新增 `lobster-member-profile-sync`：基于试衣反馈补充会员画像，并同步写入独立的会员画像表，沉淀风格偏好、版型偏好、价格敏感度、未购原因和回访触发偏好等信息。
+- `lobster-member-profile-sync`：当识别到会员（如 `is_member=true` 或已拿到 `member_mobile_last4`）时，应默认触发；即使证据较弱，也至少留下最小画像更新痕迹。
 
 
 

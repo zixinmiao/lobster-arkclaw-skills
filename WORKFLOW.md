@@ -148,7 +148,7 @@ message input
 - binding 不可用
 
 ### 9. 后置沉淀
-成功写表后，可继续执行：
+成功写表后，按条件继续执行：
 - `lobster-followup-lead-sync`
 - `lobster-member-profile-sync`
 - `lobster-fitting-daily-summary`
@@ -157,6 +157,22 @@ message input
 - 生成回访线索
 - 更新会员画像
 - 汇总日报
+
+#### 会员画像自动触发规则
+当满足以下任一条件时，`lobster-member-profile-sync` 不再是“可选”，而应默认执行：
+- `is_member = true`
+- 已识别出 `member_mobile_last4`
+- 已识别到明确会员身份，且存在本次试衣反馈 / 商品 / 体型 / 偏好信息之一
+
+执行要求：
+- 若已识别会员，但没有触发画像补充，应视为流程缺口，而不是正常跳过
+- 若会员画像表 binding 尚未确认，可先输出待同步 payload 与 `profile_sync_pending_reason`，但不能静默不处理
+- 若当前证据较弱，仍应至少输出：
+  - `member_mobile_last4`
+  - `last_profile_update_at`
+  - `profile_source_record_id`
+  - `profile_confidence`
+- 只有在“既未识别会员、也没有任何可复用画像信息”时，才允许不触发 `lobster-member-profile-sync`
 
 ## 最小可用流程
 
