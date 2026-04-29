@@ -56,3 +56,9 @@
 
 ## Field Contract
 - `references/bitable-field-contract.md`：导购小龙虾相关飞书表字段语义 contract。定义“应有字段”、允许/禁止写入内容、最小可写字段集，以及运行时字段检查规则。
+
+
+## Link-first Binding
+- 当前主方案：人工提供飞书表链接，open claw 首次自动解析 `baseToken / tableId / viewId` 并登记为项目级 binding。
+- 后续其他 open claw 直接复用已登记 binding，不再依赖 drive 搜索权限。
+- 自动发现/搜索仅作为 fallback。

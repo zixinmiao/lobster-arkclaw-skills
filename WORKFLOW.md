@@ -207,6 +207,22 @@ run lobster-fitting-bitable-sync
 run base writer
 ```
 
+### 链接初始化优先规则
+当 `project-level bitable_binding` 不存在时，runtime 应优先判断“用户是否已提供飞书表链接”，而不是先做 drive 搜索：
+
+```text
+if no project-level bitable_binding:
+  if table/base link is provided:
+    parse link -> validate fields -> save binding
+  else:
+    run bootstrap fallback
+```
+
+说明：
+- 当前权限模型下，drive 搜索不可靠
+- 链接直达是主路径
+- fallback 搜索只在没有链接时尝试
+
 ## 不应由 WORKFLOW.md 代替的部分
 
 `WORKFLOW.md` 不代替以下内容：
