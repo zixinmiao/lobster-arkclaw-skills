@@ -67,3 +67,5 @@
 ## Runtime Notes
 - 对同一导购 sender，姓名与门店应走 sender profile 继承，不应每条消息重复追问。
 - 录音消息默认应走“下载附件 -> 语音转写 -> 结构化整理”链路；只有下载或转写失败时才允许返回失败原因。
+
+- `source_sender_id` 应直接透传飞书 sender open_id；若历史有值、新写入为空，优先排查 connector/runtime 透传链路。

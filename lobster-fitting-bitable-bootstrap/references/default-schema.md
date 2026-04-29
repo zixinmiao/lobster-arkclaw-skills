@@ -16,7 +16,7 @@
 - `operator_id`（文本）
 - `operator_name`（文本）
 - `source_chat_id`（文本）
-- `source_sender_id`（文本）
+- `source_sender_id`（文本，飞书场景下应填发送人 open_id）
 - `customer_id`（文本）
 - `is_member`（复选框/布尔）
 - `member_mobile_last4`（文本）

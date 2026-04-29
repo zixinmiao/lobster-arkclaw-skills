@@ -66,6 +66,15 @@ message input
 - 只有在当前 sender 从未建立资料、或资料明显冲突时，才允许再次追问
 - `guide_name` / `store_name` 应优先来自 sender profile，其次才来自当条消息显式文本
 
+### 1.2 source_sender_id 透传规则
+如果来源是飞书消息，runtime / connector 必须把 sender open_id 作为 `source_sender_id` 直接透传到后续链路。
+
+规则：
+- `source_sender_id` 不依赖模型提取
+- 不依赖导购补充
+- 不应因为当前消息正文缺少姓名/门店而留空
+- 若飞书原始事件中存在 open_id，但最终写表为空，应视为链路 bug
+
 ### 2. 草稿管理
 再执行：
 - `lobster-fitting-draft-manager`

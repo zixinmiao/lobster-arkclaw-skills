@@ -43,12 +43,13 @@
 | not_buy_reason | 未购买原因 | optional | 预算卡点、等活动 | open_id |
 | followup_intent | 是否有后续回访意向 | optional | 到货通知我 | open_id |
 | source_channel | 来源渠道 | recommended | openclaw / feishu | 姓名 |
-| source_sender_id | 原始消息发送人 ID | recommended | 飞书/IM sender id | 姓名 |
+| source_sender_id | 原始消息发送人 ID（飞书场景下应写 open_id） | required(for feishu) | 飞书 open_id / IM sender id | 姓名、手机号 |
 | source_chat_id | 原始聊天 ID | recommended | chat_xxx | 姓名 |
 | source_agent_id | 当前写入的 open claw 实例 ID | recommended | openclaw_store_01 | 顾客手机号 |
 
 ## 1.2 关键硬规则
 - `guide_name` 只能写“姓名/展示名”，不能写 open_id。
+- 飞书消息场景下，`source_sender_id` 必须直接透传 sender open_id，不得留空，也不得依赖模型猜测。
 - `guide_open_id` 才能承接飞书 open_id；若表里没有此字段，应提示补字段，不得塞进 `guide_name`。
 - `customer_id` 在没有统一 customer_uid 生成规则前，可留空；不得把手机号或导购 open_id 塞进去。
 - `customer_phone` 与 `member_mobile_last4` 语义不同，不能混用。
@@ -58,6 +59,7 @@
 若要判定“主表当前可安全写入”，至少应具备：
 - `record_id`
 - `guide_name`
+- `source_sender_id`（飞书场景）
 - `member_mobile_last4`
 - `session_id`
 - `product_name`
