@@ -1,0 +1,121 @@
+{
+  "version": "2026-04-29",
+  "defaults": {
+    "sourceChannel": "openclaw",
+    "storeId": "unknown",
+    "storeName": "unknown",
+    "agentId": "unknown"
+  },
+  "bases": {
+    "tryon": {
+      "baseName": "导购小龙虾试衣台账",
+      "baseToken": "JwYkbN8epa6466sJjzacBz9VnYe",
+      "tableId": "tbl4yCJIoezUR0hD",
+      "viewId": "vew1wtcott",
+      "tableName": "试衣商品记录",
+      "dedupeKeys": [
+        "record_id"
+      ],
+      "fallbackDedupeKeys": [
+        "session_id",
+        "customer_id",
+        "product_code"
+      ],
+      "fields": {
+        "record_id": "导购小龙虾试衣台账",
+        "customer_id": "customer_id",
+        "member_mobile_last4": "member_mobile_last4",
+        "liked_points": "liked_points",
+        "session_id": "session_id",
+        "session_status": "session_status",
+        "source_channel": "source_channel",
+        "guide_name": "guide_name",
+        "source_sender_id": "source_sender_id",
+        "fit_feedback": "fit_feedback",
+        "try_on_result": "try_on_result",
+        "source_bundle_id": "source_bundle_id",
+        "ocr_confidence": "ocr_confidence",
+        "raw_notes": "raw_notes",
+        "size": "size",
+        "body_effect_desc": "body_effect_desc",
+        "source_chat_id": "source_chat_id",
+        "tag_price": "tag_price",
+        "not_buy_reason": "not_buy_reason",
+        "operator_id": "operator_id",
+        "product_name": "product_name",
+        "is_member": "is_member",
+        "source_message_ids": "source_message_ids",
+        "color": "color",
+        "followup_intent": "followup_intent",
+        "store_name": "store_name",
+        "member_identity_status": "member_identity_status",
+        "disliked_points": "disliked_points",
+        "is_high_intent": "is_high_intent",
+        "fitting_time": "fitting_time",
+        "sku": "sku",
+        "operator_name": "operator_name",
+        "fitting_date": "fitting_date",
+        "product_code": "product_code"
+      }
+    },
+    "followup": {
+      "baseName": "线索回访表",
+      "baseToken": "MRUXbR0xnaUjnTsdMVrcFjiTnYb",
+      "tableId": "tbll0eeYftM9CLSc",
+      "viewId": "vewleQBhtM",
+      "tableName": "线索回访表",
+      "dedupeKeys": [
+        "线索ID"
+      ],
+      "fields": {
+        "lead_id": "线索ID",
+        "touch_result": "触达结果",
+        "actual_touch_at": "实际触达时间",
+        "touch_time_type": "建议触达时机类型",
+        "recommended_action": "推荐动作",
+        "status": "状态",
+        "guide_name": "导购",
+        "should_followup": "是否需要回访",
+        "priority": "优先级",
+        "title": "线索回访表",
+        "lead_reason": "回访原因",
+        "source_fitting_record_id": "来源试衣记录ID",
+        "lead_date": "日期",
+        "planned_touch_at": "计划触达时间",
+        "touch_trigger_condition": "触发条件",
+        "followup_content": "建议回访内容",
+        "member_mobile_last4": "会员尾号",
+        "remind_at": "提醒时间",
+        "product_name": "试穿单品",
+        "is_reminded": "是否已提醒"
+      }
+    },
+    "memberProfile": {
+      "baseName": "导购小龙虾会员画像",
+      "baseToken": "GBOcbMEb9a1P3psWrYvcUK6unkd",
+      "tableId": "tbl57lFfpcd6HxNA",
+      "viewId": "vewfmDUoMy",
+      "tableName": "导购小龙虾会员画像",
+      "dedupeKeys": [
+        "会员尾号"
+      ],
+      "fields": {
+        "style_preference": "风格偏好",
+        "color_preference": "颜色偏好",
+        "profile_id": "导购小龙虾会员画像",
+        "profile_source_record_id": "最近来源试衣记录",
+        "price_sensitivity": "价格敏感度",
+        "size_preference": "尺码偏好",
+        "body_shape_notes": "体型备注",
+        "member_mobile_last4": "会员尾号",
+        "followup_trigger_preferences": "回访触发偏好",
+        "common_not_buy_reasons": "常见未购原因",
+        "styling_needs": "搭配需求",
+        "material_preference": "面料偏好",
+        "last_profile_update_at": "最近更新时间",
+        "fit_preference": "版型偏好",
+        "profile_confidence": "画像置信度"
+      }
+    }
+  }
+}
