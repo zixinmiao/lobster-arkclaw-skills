@@ -77,6 +77,7 @@ description: 在试衣数据准备写入飞书多维表格前，检查并补齐 
 ### 4. 再校验字段并补齐
 - 先读取真实表结构，再补缺失字段
 - 不仅检查主表，也要检查 `线索回访表` 与 `会员画像表` 的初始化字段完整性
+- required 字段缺失时，应明确返回 `missing_fields` / `missing_tables`，供上游阻断写入
 - 仅补必要字段，不随意扩展
 - 默认字段清单见 `references/default-schema.md`
 
@@ -100,6 +101,7 @@ description: 在试衣数据准备写入飞书多维表格前，检查并补齐 
 - 默认使用项目级共享 Base：一个项目一套 Base，多导购共用
 - 结构优先：先确保 Base、表、字段，再进入 `lobster-fitting-bitable-sync`
 - 初始化检查范围不仅包含主表，也包含 `线索回访表`、`会员画像表` 两张后置沉淀表
+- bootstrap 阶段应以 required 字段可写为优先目标，而不是追求字段越多越好
 - binding 缺失时，不要只返回 `no_binding` 就结束；应优先尝试“用户给链接 -> 自动登记 binding”，再考虑补齐基础设施
 - 若已存在可用 binding，则禁止因新导购触发而再次创建 Base
 - 若任一步失败，明确返回失败原因，不伪造 `ready`

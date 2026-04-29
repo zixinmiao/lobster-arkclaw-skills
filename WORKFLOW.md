@@ -2,24 +2,22 @@
 
 本文档用于定义这套 skill 的推荐编排顺序。
 
-> 说明：`WORKFLOW.md` 负责描述“应该如何串联”，不会自己执行。真正执行仍需要 ArkClaw / OpenClaw 的 runtime、connector、workflow engine 或上层服务来调用这些 skill。
+> 说明：`WORKFLOW.md` 负责描述应该如何串联；真正执行仍需要 runtime、connector 或 workflow engine 来调用这些 skill。
 
 ## 目标
 
 这套技能包默认面向以下场景：
-
 - 多导购共用同一套飞书试衣台账
-- 首次使用时自动创建飞书多维表格
-- 表格创建成功后，后续导购复用已有表格
-- 试衣记录、素材记录、session 索引写入同一套项目级 Base
+- 首次使用时完成飞书表绑定或初始化
+- 试衣记录、回访线索、会员画像稳定写入同一套项目级数据底座
+- required 字段缺失时阻断写入，优先保证数据稳定性
 
 ## 总体编排原则
-
 1. 先归并，再识别，再合并，再判断是否允许写入
 2. 正式写表前，必须先确保 `bitable_binding` 已存在且可用
-3. 若没有 binding，先执行建表 bootstrap；若已有 binding，则直接复用
+3. 若没有 binding，优先走“给链接 -> 自动登记”
 4. `pending_media` 或 `write_decision.allow_write = false` 时，不得写入主表
-5. 多导购共用一套 Base，禁止因不同导购触发而重复创建 Base
+5. required 字段缺失时，不得部分落表
 
 ## 主流程
 
@@ -37,211 +35,100 @@ message input
 -> lobster-member-profile-sync
 ```
 
-## 详细流程
-
-### 1. 输入归并
-先执行：
-- `lobster-fitting-bundle-router`
-
-目标：
-- 把同一导购在短时间窗口内发送的图 / 音 / 文归并到同一个 bundle
-- 避免一条消息直接变成一条正式记录
-
-输出重点：
-- `bundle_id`
-- `bundle_status`
-- `message_ids`
-- `routing_action`
-
-### 1.1 导购资料继承
-在输入归并之前，runtime / connector 应先读取 sender 级资料缓存（如 `sender_profile` / `guide_profile`），至少尝试继承：
+## 关键前置规则
+### 1. 导购资料继承
+runtime / connector 应先读取 sender 级资料缓存，至少尝试继承：
 - `guide_name`
-- `guide_open_id`
 - `store_name`
-- `source_sender_id`
-- `source_chat_id`
+- `operator_id`
+- `source_bundle_id`
 
-规则：
-- 若同一 sender 之前已经明确提供过导购姓名或门店，后续消息默认继承，不应反复询问
-- 只有在当前 sender 从未建立资料、或资料明显冲突时，才允许再次追问
-- `guide_name` / `store_name` 应优先来自 sender profile，其次才来自当条消息显式文本
+若同一 sender 之前已经明确提供过导购姓名或门店，后续消息默认继承，不应反复询问。
 
-### 1.2 source_sender_id 透传规则
-如果来源是飞书消息，runtime / connector 必须把 sender open_id 作为 `source_sender_id` 直接透传到后续链路。
+### 2. 主表 required 字段
+主表写入前必须具备：
+- `session_id`
+- `guide_name`
+- `fitting_date`
+- `fitting_time`
+- `operator_id`
+- `is_member`
+- `product_code`
+- `product_name`
+- `try_on_result`
+- `source_bundle_id`
+- `raw_notes`
 
-规则：
-- `source_sender_id` 不依赖模型提取
-- 不依赖导购补充
-- 不应因为当前消息正文缺少姓名/门店而留空
-- 若飞书原始事件中存在 open_id，但最终写表为空，应视为链路 bug
+### 3. source_bundle_id 透传规则
+如果来源是飞书消息，runtime / connector 必须把 sender open_id 作为 `source_bundle_id` 直接透传到后续链路。
+该字段不依赖模型提取，不依赖导购补充。
 
-### 2. 草稿管理
-再执行：
-- `lobster-fitting-draft-manager`
+### 4. 语音处理边界
+当前若没有可用 transcript，不应假设可以直接把录音转成结构化字段；无 transcript 时应进入待补录 / 待补文本状态。
 
-目标：
-- 管理草稿态
-- 决定当前是否继续等待补充内容
-- 在正式写入前先锁住“未确认”状态
-
-输出重点：
-- `draft_status`
-- `allow_write`
-- `missing_fields`
-
-### 3. 识别层
-按需执行：
-- `lobster-tag-ocr`
-- `lobster-fitting-stt`
-- `lobster-member-identity-parse`
-
-目标：
-- 识别商品候选信息
-- 转写语音
-- 识别顾客身份和会员相关信息
-
-### 3.1 语音处理要求
-当消息类型为音频 / 录音时，不应直接返回“暂时无法直接转写语音”。推荐链路应为：
-1. 先下载语音附件
-2. 调用语音转写能力（如 Whisper）得到 transcript
-3. 再进入 `lobster-fitting-stt` 做结构化整理
-
-执行规则：
-- 有可访问音频附件时，默认应尝试转写
-- 只有在“附件无法下载 / 格式损坏 / 转写服务失败”时，才允许返回失败
-- 返回失败时要带明确原因：`audio_download_failed` / `audio_decode_failed` / `transcribe_failed`
-
-### 4. 记录合并
-执行：
-- `lobster-fitting-record-merge`
-
-目标：
-- 形成结构化 `fitting_records`
-- 判断 `session_link`
-- 输出 `media_records`
-- 生成 `write_decision`
-
-关键约束：
-- 如果只有图片、没有足够文本，必须返回 `pending_media`
-- 不得仅依据单张图片推断成交
-- 若当前 OCR 商品与历史上下文冲突，优先使用本次 OCR 商品
-
-### 5. 可选卡片确认
-若业务需要人工确认，再执行：
-- `lobster-fitting-card-fill`
-
-适用场景：
-- 试衣信息还需导购二次确认
-- 需要卡片预填并提交后再正式写表
-
-### 6. 建表 / 绑定修复
+## 建表 / 初始化规则
 正式写表前必须执行：
 - `lobster-fitting-bitable-bootstrap`
 
-规则：
-- 若不存在 `bitable_binding.base_token`，先创建 Base 和目标表
-- 若已有 binding，但目标表缺失，则补建缺表
-- 若表已存在但字段不完整，则补字段
-- 若已有可用项目级 binding，则直接复用，禁止重复创建 Base
-
-默认创建对象：
+默认创建 / 校验对象：
 - Base：`导购小龙虾试衣台账`
-- 主表：`试衣商品记录`
-- 辅助表：`试衣素材索引`
-- 辅助表：`试衣Session索引`
+- `试衣商品记录`
+- `试衣素材索引`
+- `试衣Session索引`
+- `线索回访表`
+- `会员画像表`
 
-### 7. 写表载荷生成
+初始化检查时，不仅检查表是否存在，也要检查 required 字段是否完整。
+
+## 写表载荷生成
 执行：
 - `lobster-fitting-bitable-sync`
 
 目标：
 - 把结构化试衣数据映射成适合飞书 Base 写入的 payload
-- 保留主表、素材表、session 索引表的写入结构
+- 在正式写入前完成 required 字段校验
 
-主表必备区分字段：
-- `guide_name`
-- `store_name`
-- `operator_id`
-- `operator_name`
-- `source_chat_id`
-- `source_sender_id`
-- `session_id`
-
-### 8. 正式写入
-由 runtime / connector / workflow engine 执行实际 Base 写入。
-
-写入前必须满足：
+## 正式写入前必须满足
 - `binding_status = ready`
 - `write_decision.allow_write = true`
+- `missing_required_fields = []`
 - 主表结构完整
 
 禁止写入场景：
 - `pending_media`
 - `write_decision.allow_write = false`
 - binding 不可用
+- required 字段缺失
 
-### 9. 后置沉淀
+## 后置沉淀
 成功写表后，按条件继续执行：
 - `lobster-followup-lead-sync`
 - `lobster-member-profile-sync`
 - `lobster-fitting-daily-summary`
 
-目标：
-- 生成回访线索
-- 更新会员画像
-- 汇总日报
+### 回访表 required 字段
+- `线索ID`
+- `来源试衣记录ID`
+- `日期`
+- `导购名称`
+- `导购open_id`
+- `会员尾号`
+- `试穿单品`
+- `回访原因`
+- `建议触达时机类型`
+- `建议回访内容`
+- `推荐动作`
+- `优先级`
+- `状态`
+- `是否已提醒`
 
-#### 会员画像自动触发规则
-当满足以下任一条件时，`lobster-member-profile-sync` 不再是“可选”，而应默认执行：
-- `is_member = true`
-- 已识别出 `member_mobile_last4`
-- 已识别到明确会员身份，且存在本次试衣反馈 / 商品 / 体型 / 偏好信息之一
-
-执行要求：
-- 若已识别会员，但没有触发画像补充，应视为流程缺口，而不是正常跳过
-- 若会员画像表 binding 尚未确认，可先输出待同步 payload 与 `profile_sync_pending_reason`，但不能静默不处理
-- 若当前证据较弱，仍应至少输出：
-  - `member_mobile_last4`
-  - `last_profile_update_at`
-  - `profile_source_record_id`
-  - `profile_confidence`
-- 只有在“既未识别会员、也没有任何可复用画像信息”时，才允许不触发 `lobster-member-profile-sync`
-
-## 最小可用流程
-
-如果当前只想先跑通“自动建表 + 写表”，可使用最小流程：
-
-```text
-message input
--> lobster-tag-ocr / lobster-fitting-stt
--> lobster-fitting-record-merge
--> lobster-fitting-bitable-bootstrap
--> lobster-fitting-bitable-sync
--> base writer
-```
+### 会员画像表 required 字段
+- `会员尾号`
+- `最近更新时间`
+- `最近来源试衣记录`
+- `画像置信度`
 
 ## 推荐前置判断
-
-推荐在 runtime / connector 层固定加上这段逻辑：
-
-```text
-if no project-level bitable_binding:
-  run lobster-fitting-bitable-bootstrap
-else:
-  reuse existing binding
-
-if binding_status != ready:
-  stop write
-
-if write_decision.allow_write != true:
-  stop write
-
-run lobster-fitting-bitable-sync
-run base writer
-```
-
-### 链接初始化优先规则
-当 `project-level bitable_binding` 不存在时，runtime 应优先判断“用户是否已提供飞书表链接”，而不是先做 drive 搜索：
 
 ```text
 if no project-level bitable_binding:
@@ -249,23 +136,16 @@ if no project-level bitable_binding:
     parse link -> validate fields -> save binding
   else:
     run bootstrap fallback
+
+if binding_status != ready:
+  stop write
+
+if write_decision.allow_write != true:
+  stop write
+
+if missing_required_fields is not empty:
+  stop write
+
+run lobster-fitting-bitable-sync
+run base writer
 ```
-
-说明：
-- 当前权限模型下，drive 搜索不可靠
-- 链接直达是主路径
-- fallback 搜索只在没有链接时尝试
-
-## 不应由 WORKFLOW.md 代替的部分
-
-`WORKFLOW.md` 不代替以下内容：
-- skill 自身的字段约束
-- runtime 的实际调用逻辑
-- connector 的鉴权与重试机制
-- 飞书 Base 的真实写入命令
-
-这些仍需由：
-- `SKILL.md`
-- `AGENTS.md`
-- 上层 connector / workflow engine
-共同完成。
