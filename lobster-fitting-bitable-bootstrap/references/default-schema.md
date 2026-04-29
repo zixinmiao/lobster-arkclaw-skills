@@ -85,3 +85,54 @@
 - 主表必须保留导购/录入来源识别字段，确保多导购共用同一张表时仍可区分记录归属
 - 真实写入前，以上游 `lobster-fitting-bitable-sync` 的字段映射为准
 - 若已有历史表结构，不强制重建，优先补齐缺失字段
+
+
+## 4. 线索回访表
+用于沉淀基于试衣反馈生成的后续回访线索。
+
+建议字段：
+- `lead_id`（文本）
+- `source_fitting_record_id`（文本）
+- `guide_name`（文本）
+- `member_mobile_last4`（文本）
+- `product_name`（文本）
+- `should_followup`（复选框/布尔）
+- `lead_reason`（长文本）
+- `touch_time_type`（文本）
+- `planned_touch_at`（日期/日期时间）
+- `touch_trigger_condition`（长文本）
+- `followup_content`（长文本）
+- `recommended_action`（文本）
+- `priority`（文本）
+- `status`（文本）
+- `actual_touch_at`（日期/日期时间）
+- `touch_result`（长文本）
+- `remind_at`（日期/日期时间）
+- `is_reminded`（复选框/布尔）
+
+建议去重键：
+- `lead_id`
+
+
+## 5. 会员画像表
+用于沉淀会员长期可复用的偏好与经营信息。
+
+建议字段：
+- `profile_id`（文本）
+- `member_mobile_last4`（文本）
+- `style_preference`（长文本）
+- `fit_preference`（长文本）
+- `size_preference`（文本）
+- `body_shape_notes`（长文本）
+- `color_preference`（长文本）
+- `material_preference`（长文本）
+- `price_sensitivity`（文本/长文本）
+- `common_not_buy_reasons`（长文本）
+- `followup_trigger_preferences`（长文本）
+- `styling_needs`（长文本）
+- `last_profile_update_at`（日期/日期时间）
+- `profile_source_record_id`（文本）
+- `profile_confidence`（文本）
+
+建议去重键：
+- `member_mobile_last4`

@@ -119,7 +119,9 @@ description: 在试衣数据准备写入飞书多维表格前，检查并补齐 
     "tables": {
       "试衣商品记录": "tbl_xxx",
       "试衣素材索引": "tbl_xxx",
-      "试衣Session索引": "tbl_xxx"
+      "试衣Session索引": "tbl_xxx",
+      "线索回访表": "tbl_xxx",
+      "会员画像表": "tbl_xxx"
     },
     "binding_status": "ready | partial | missing | invalid",
     "schema_status": "ready | partial | missing_fields | missing_tables",
