@@ -53,6 +53,19 @@ message input
 - `message_ids`
 - `routing_action`
 
+### 1.1 导购资料继承
+在输入归并之前，runtime / connector 应先读取 sender 级资料缓存（如 `sender_profile` / `guide_profile`），至少尝试继承：
+- `guide_name`
+- `guide_open_id`
+- `store_name`
+- `source_sender_id`
+- `source_chat_id`
+
+规则：
+- 若同一 sender 之前已经明确提供过导购姓名或门店，后续消息默认继承，不应反复询问
+- 只有在当前 sender 从未建立资料、或资料明显冲突时，才允许再次追问
+- `guide_name` / `store_name` 应优先来自 sender profile，其次才来自当条消息显式文本
+
 ### 2. 草稿管理
 再执行：
 - `lobster-fitting-draft-manager`
@@ -77,6 +90,17 @@ message input
 - 识别商品候选信息
 - 转写语音
 - 识别顾客身份和会员相关信息
+
+### 3.1 语音处理要求
+当消息类型为音频 / 录音时，不应直接返回“暂时无法直接转写语音”。推荐链路应为：
+1. 先下载语音附件
+2. 调用语音转写能力（如 Whisper）得到 transcript
+3. 再进入 `lobster-fitting-stt` 做结构化整理
+
+执行规则：
+- 有可访问音频附件时，默认应尝试转写
+- 只有在“附件无法下载 / 格式损坏 / 转写服务失败”时，才允许返回失败
+- 返回失败时要带明确原因：`audio_download_failed` / `audio_decode_failed` / `transcribe_failed`
 
 ### 4. 记录合并
 执行：

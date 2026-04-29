@@ -24,6 +24,7 @@ description: 管理导购试衣录入的 draft 草稿上下文。适用于将飞
 - `ocr_result`（可选）
 - `stt_result`（可选）
 - `member_result`（可选）
+- `guide_profile` / `sender_profile`（可选）
 - `existing_draft`（可选）
 - `context_policy`（可选，`inherit_if_safe` / `strict_isolation`，默认建议按 `strict_isolation` 理解）
 - `reset_context`（可选，`true` 表示本次明确清除上一条草稿上下文）
@@ -32,6 +33,8 @@ description: 管理导购试衣录入的 draft 草稿上下文。适用于将飞
 ## 核心规则
 - 每次试衣录入先创建或更新 `draft_id`
 - 新吊牌图、新语音、新文本都先挂到 draft，不得直接生成正式记录
+- draft 在创建或更新时，应优先继承 `guide_profile` / `sender_profile` 中的稳定字段，如 `guide_name`、`store_name`
+- 对同一 sender，若这些字段此前已经确认，不应在后续每条录入里重新追问
 - draft 必须明确绑定：
   - `draft_id`
   - `bundle_id`

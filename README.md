@@ -62,3 +62,8 @@
 - 当前主方案：人工提供飞书表链接，open claw 首次自动解析 `baseToken / tableId / viewId` 并登记为项目级 binding。
 - 后续其他 open claw 直接复用已登记 binding，不再依赖 drive 搜索权限。
 - 自动发现/搜索仅作为 fallback。
+
+
+## Runtime Notes
+- 对同一导购 sender，姓名与门店应走 sender profile 继承，不应每条消息重复追问。
+- 录音消息默认应走“下载附件 -> 语音转写 -> 结构化整理”链路；只有下载或转写失败时才允许返回失败原因。
